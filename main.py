@@ -1,3 +1,4 @@
+import importlib
 import threading
 
 from fastapi import FastAPI, Response
@@ -5,6 +6,11 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 import uvicorn
+
+
+def require(name: str):
+  return importlib.import_module(name)
+
 
 app = FastAPI(docs_url=None)
 app.mount("/_static", StaticFiles(directory="_static"), name="_static")
@@ -30,7 +36,7 @@ async def swagger():
 
 
 def run():
-  threading.Thread(target=lambda: uvicorn.run(
+  require("threading").Thread(target=lambda: uvicorn.run(
     app, host="0.0.0.0", port=8000, log_level="info")).start()
 
 
